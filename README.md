@@ -1,4 +1,4 @@
-﻿﻿# BossKey
+﻿﻿﻿# BossKey
 
 > 乙烯一个一个老板键应用程序
 
@@ -58,7 +58,7 @@
 FAQ
 ---
 
-Q：为什么软件无法运行？
+Q：为什么软件无法运行？<br/>
 A：检查系统是否为 Windows，有没有毒软限制了软件。
 
 编译以及生成
@@ -80,13 +80,12 @@ A：检查系统是否为 Windows，有没有毒软限制了软件。
 其他
 ---
 
-如果你喜欢这个项目，
-不妨推荐给你的好友吧😉
+如果你喜欢这个项目，<br/>不妨推荐给你的好友吧😉
 
 许可
 ---
 
 [MIT License](https://github.com/LengSC/BossKey/blob/main/LICENSE) (free, open source)
 
-Q：为什么不用 WTFPL 啊啊啊啊啊啊！
+Q：为什么不用 WTFPL 啊啊啊啊啊啊！<br/>
 A：Emmmmm...
