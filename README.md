@@ -1,4 +1,4 @@
-﻿# BossKey
+﻿﻿# BossKey
 
 > 乙烯一个一个老板键应用程序
 
@@ -44,6 +44,49 @@
 下载
 ---
 
-* [下载最新版已编译 x64 版本](https://raw.githubusercontent.com/LengSC/BossKey/main/)
-* [下载最新版已编译 x86 版本](https://raw.githubusercontent.com/LengSC/BossKey/main/)
+* [下载最新版已编译 x64 版本](https://raw.githubusercontent.com/LengSC/BossKey/main/x64/Release/BossKey.exe)
 
+* [下载最新版已编译 x86 版本](https://raw.githubusercontent.com/LengSC/BossKey/main/Win32/Release/BossKey.exe)
+
+提示：不知道哪些垃只因杀毒软件会报毒？
+
+操作方法
+---
+
+详见软件**主菜单 -> 帮助 -> 用法**。
+
+FAQ
+---
+
+Q：为什么软件无法运行？
+A：检查系统是否为 Windows，有没有毒软限制了软件。
+
+编译以及生成
+---
+
+| 支持的编译工具：||
+|:-|:-:|
+| [Visual Studio](https://www.visualstudio.com/) 2022 | 推荐 |
+| GCC 4.7+（需要自己配置环境） | 不推荐 |
+
+### 构建步骤
+
+1. 使用 Visual Studio 2022 打开项目 BossKey.sln。
+2. 在顶部工具栏选择配置为 **Release**，平台适自己的系统而定。
+3. 在解决方案资源管理器中右键“BossKey”项目，点击“生成”。
+4. 等待生成完毕。
+5. 在项目目录 **/x64/Release** 或者 **/Win32/Release** 下就有构建完成的程序了。
+
+其他
+---
+
+如果你喜欢这个项目，
+不妨推荐给你的好友吧😉
+
+许可
+---
+
+[MIT License](https://github.com/LengSC/BossKey/blob/main/LICENSE) (free, open source)
+
+Q：为什么不用 WTFPL 啊啊啊啊啊啊！
+A：Emmmmm...
