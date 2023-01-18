@@ -1,13 +1,13 @@
-#include "DlgSettings.h"
+#include "SettingsWindow.h"
 
 
-INT_PTR CALLBACK DlgSettings::DialogProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK SettingsWindow::SettingsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	switch (uMsg) {
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
 		case IDC_SETTINGS_OK:
 		case IDC_SETTINGS_CANCEL:
-			EndDialog(hdlg, LOWORD(wParam));
+			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 			break;
 		}

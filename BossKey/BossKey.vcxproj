@@ -144,16 +144,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="DlgAbout.cpp" />
+    <ClCompile Include="AboutWindow.cpp" />
     <ClCompile Include="BossKey.cpp" />
-    <ClCompile Include="DlgSettings.cpp" />
+    <ClCompile Include="SettingsWindow.cpp" />
+    <ClCompile Include="WindowSwitching.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
-    <ClInclude Include="DlgAbout.h" />
+    <ClInclude Include="AboutWindow.h" />
     <ClInclude Include="BossKey.h" />
-    <ClInclude Include="DlgSettings.h" />
+    <ClInclude Include="SettingsWindow.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="WindowSwitching.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BossKey.rc" />

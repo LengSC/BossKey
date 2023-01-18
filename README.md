@@ -6,9 +6,10 @@
 
 <p align = "center">
     <a href = "#"><img src = "https://img.shields.io/badge/language-C++-blue.svg"></a>
-    <a href = "#"><img src = "https://img.shields.io/badge/beta-1.0-greeb.svg"></a>
-    <a href = "#"><img src = "https://img.shields.io/badge/lisence-MIT-orange.svg"></a>
+    <a href = "https://github.com/LengSC/BossKey/releases"><img src = "https://img.shields.io/badge/release-1.0-greeb.svg"></a>
+    <a href = "https://github.com/LengSC/BossKey/blob/main/LICENSE"><img src = "https://img.shields.io/badge/lisence-MIT-orange.svg"></a>
 </p>
+
 
 ---
 

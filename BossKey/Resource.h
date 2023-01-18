@@ -12,7 +12,8 @@
 #define IDD_DIALOG_ABOUT                108
 #define IDD_DIALOG_SETTINGS             111
 #define IDC_ABOUT_OK                    1002
-#define IDC_MAIN_EDIT_LOG               1003
+#define IDC_MAIN_LOGGING                1003
+#define IDC_MAIN_SELECT                 1004
 #define IDC_SETTINGS_OK                 1006
 #define IDC_SETTINGS_CANCEL             1007
 #define IDC_ABOUT_REPO                  1009
@@ -30,7 +31,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        113
 #define _APS_NEXT_COMMAND_VALUE         40007
-#define _APS_NEXT_CONTROL_VALUE         1011
+#define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

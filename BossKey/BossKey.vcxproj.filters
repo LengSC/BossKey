@@ -35,7 +35,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DlgAbout.cpp">
+    <ClCompile Include="AboutWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="BossKey.cpp">
@@ -44,12 +44,15 @@
     <ClCompile Include="App.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DlgSettings.cpp">
+    <ClCompile Include="SettingsWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowSwitching.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DlgAbout.h">
+    <ClInclude Include="AboutWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="BossKey.h">
@@ -61,7 +64,10 @@
     <ClInclude Include="App.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DlgSettings.h">
+    <ClInclude Include="SettingsWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowSwitching.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

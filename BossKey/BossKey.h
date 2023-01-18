@@ -2,17 +2,18 @@
 
 #include <Windows.h>
 
-#include "DlgSettings.h"
-#include "DlgAbout.h"
+#include "SettingsWindow.h"
+#include "AboutWindow.h"
+#include "WindowSwitching.h"
 
 #include "Resource.h"
 
 
 /* 窗口创建状态枚举 */
-enum CreationStates {
-	CREATIONSTATE_SUCCEED = (INT)0,		/* 创建成功 */
-	CREATIONSTATE_FAILED = (INT)1,		/* 创建失败 */
-	CREATIONSTATE_EXECUTING = (INT)-1	/* 已经运行 */
+enum CreationState {
+	CS_SUCCEED = (INT)0,	/* 创建成功 */
+	CS_FAILED = (INT)1,		/* 创建失败 */
+	CS_EXECUTING = (INT)-1	/* 已经运行 */
 };
 
 
@@ -37,7 +38,9 @@ private:
 
 	HANDLE m_hMutexExecuting;	/* 互斥体防止进程多开 */
 
-	ATOM m_idHotkeySwitch;		/* 系统热键ID */
+	ATOM m_idHotkeySwitch;		/* 窗口状态切换热键ID */
+
+	WindowSwitching m_wndSwt;	/* 窗口状态切换封装类 */
 
 private:
 	LRESULT OnCreate();
@@ -51,6 +54,8 @@ private:
 	LRESULT OnPaint();
 
 	LRESULT OnHotkey(WPARAM wParam, LPARAM lParam);
+
+	LRESULT OnBtnSelect();
 
 private:
 	VOID EditAddStr(HWND hEdit, PCWSTR szAdd);

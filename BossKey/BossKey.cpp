@@ -46,11 +46,11 @@ INT BossKey::Create() {
 	m_hMutexExecuting = CreateMutex(NULL, FALSE, L"EXECUTING");
 
 	if (m_hMutexExecuting == NULL) {
-		return CREATIONSTATE_FAILED;
+		return CS_FAILED;
 	}
 	else if (GetLastError() == ERROR_ALREADY_EXISTS) {
 		CloseHandle(m_hMutexExecuting);
-		return CREATIONSTATE_EXECUTING;
+		return CS_EXECUTING;
 	}
 
 	WNDCLASSEX wc = { 0 };
@@ -66,19 +66,21 @@ INT BossKey::Create() {
 	wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_16));
 	wc.hIconSm = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_16));
 
-	RegisterClassEx(&wc);
+	if (!RegisterClassEx(&wc)) {
+		return CS_FAILED;
+	}
 
 	m_hWnd = CreateWindowEx(
 		NULL,
 		ClassName(), L"BossKey",
 		WS_CAPTION | WS_SYSMENU | WS_OVERLAPPED | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		325, 510,
+		300, 500,
 		NULL, LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU_MAIN)), GetModuleHandle(NULL),
 		this
 	);
 
-	return (m_hWnd ? CREATIONSTATE_SUCCEED : CREATIONSTATE_FAILED);
+	return (m_hWnd ? CS_SUCCEED : CS_FAILED);
 }
 
 
@@ -115,15 +117,19 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 
 		case ID_FILE_SETTINGS:
-			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_SETTINGS), m_hWnd, DlgSettings::DialogProc);
+			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_SETTINGS), m_hWnd, SettingsWindow::SettingsProc);
 			break;
 
 		case ID_HELP_ABOUT:
-			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_ABOUT), m_hWnd, DlgAbout::DialogProc);
+			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_ABOUT), m_hWnd, AboutWindow::AboutProc);
 			break;
 
 		case ID_HELP_USAGE:
 			// TODO 使用方法
+			break;
+
+		case IDC_MAIN_SELECT:
+			OnBtnSelect();
 			break;
 
 		}
@@ -142,7 +148,21 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 LRESULT BossKey::OnCreate() {
 	/* 注册全局热键 */
 	m_idHotkeySwitch = GlobalAddAtom(L"HotkeySwitchWindowShowState");
-	RegisterHotKey(m_hWnd, m_idHotkeySwitch, MOD_CONTROL | MOD_ALT, 'D');
+	RegisterHotKey(m_hWnd, m_idHotkeySwitch, MOD_CONTROL | MOD_ALT, 'S');
+
+	/* 创建控件 */
+	HWND hBtnSelect = CreateWindowEx(
+		NULL,
+		L"BUTTON",
+		L"选择窗口",
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_CENTER | BS_VCENTER,
+		10, 10,
+		80, 25,
+		m_hWnd,
+		(HMENU)IDC_MAIN_SELECT,
+		GetModuleHandle(NULL),
+		NULL
+	);
 
 	/* 用于日志输出 */
 	HWND hEditLog = CreateWindowEx(
@@ -150,10 +170,10 @@ LRESULT BossKey::OnCreate() {
 		L"EDIT",
 		NULL,
 		WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_LEFT | ES_READONLY,
-		10, 10,
-		200, 400,
+		100, 10,
+		175, 420,
 		m_hWnd,
-		(HMENU)IDC_MAIN_EDIT_LOG,
+		(HMENU)IDC_MAIN_LOGGING,
 		GetModuleHandle(NULL),
 		NULL
 	);
@@ -179,6 +199,9 @@ LRESULT BossKey::OnDestroy() {
 	UnregisterHotKey(m_hWnd, m_idHotkeySwitch);
 	GlobalDeleteAtom(m_idHotkeySwitch);
 
+	/* 释放绑定的窗口 */
+	m_wndSwt.Release();
+
 	PostQuitMessage(0);
 
 	return 0;
@@ -186,7 +209,7 @@ LRESULT BossKey::OnDestroy() {
 
 
 LRESULT BossKey::OnCtlColorStatic(WPARAM wParam, LPARAM lParam) {
-	HWND hEditLog = GetDlgItem(m_hWnd, IDC_MAIN_EDIT_LOG);
+	HWND hEditLog = GetDlgItem(m_hWnd, IDC_MAIN_LOGGING);
 
 	HDC hDc = (HDC)wParam;
 
@@ -221,10 +244,14 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 	switch (LOWORD(lParam)) {
 	case (MOD_CONTROL | MOD_ALT):
 		switch (HIWORD(lParam)) {
-		case 'D':
-			// 切换窗口显示状态
-			//DEBUG
-			EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_EDIT_LOG), L"114514\r\n");
+		case 'S':
+			/* 切换窗口此显示状态 */
+			if (m_wndSwt.Switch()) {
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    切换了窗口状态\r\n");
+			}
+			else {
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    绑定的窗口已关闭\r\n");
+			}
 			break;
 
 		}
@@ -236,34 +263,27 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 }
 
 
-VOID BossKey::EditAddStr(HWND hEdit, PCWSTR szAdd) {
-	/* 向编辑控件添加字符串 */
-	int nLogLen = GetWindowTextLength(hEdit);
+LRESULT BossKey::OnBtnSelect() {
+	EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    开始选择窗口\r\n");
+	switch (m_wndSwt.Select()) {
+	case SS_SUCCEED:
+		EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    窗口选择成功\r\n");
+		break;
 
-	PWSTR szResult = (PWSTR)malloc((nLogLen + lstrlen(szAdd) + 1) * sizeof(WCHAR));
+	case SS_CANCELED:
+		EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    用户取消了窗口选择\r\n");
+		break;
 
-	if (szResult == NULL) {
-		return;
+	case SS_FAILED:
+		EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    窗口选择失败\r\n");
+		break;
 	}
+	return 0;
+}
 
-	ZeroMemory(szResult, sizeof(szResult));
-	GetWindowText(hEdit, szResult, nLogLen + 1);
-	lstrcat(&szResult[nLogLen], szAdd);
-	SetWindowText(hEdit, szResult);
 
-	free(szResult);
-
-	/* 滚动到最后一行 */
-	SCROLLINFO scrInfo = { 0 };
-
-	scrInfo.cbSize = sizeof(SCROLLINFO);
-	scrInfo.fMask = SIF_RANGE;
-
-	GetScrollInfo(hEdit, SB_VERT, &scrInfo);
-
-	int nMax = scrInfo.nMax;
-	scrInfo.fMask = SIF_POS;
-	scrInfo.nPos = nMax;
-
-	SetScrollInfo(hEdit, SB_VERT, &scrInfo, TRUE);
+VOID BossKey::EditAddStr(HWND hEdit, PCWSTR szAdd) {
+	int nStrLen = GetWindowTextLength(hEdit);
+	SendMessage(hEdit, EM_SETSEL, (WPARAM)nStrLen, (LPARAM)nStrLen);
+	SendMessage(hEdit, EM_REPLACESEL, NULL, (LPARAM)szAdd);
 }
