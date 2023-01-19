@@ -4,6 +4,8 @@
 
 #include "SettingsWindow.h"
 #include "AboutWindow.h"
+#include "UsageWindow.h"
+
 #include "WindowSwitching.h"
 
 #include "Resource.h"
@@ -38,11 +40,17 @@ private:
 
 	HANDLE m_hMutexExecuting;	/* 互斥体防止进程多开 */
 
-	ATOM m_idHotkeySwitch;		/* 窗口状态切换热键ID */
-	ATOM m_idHotkeyDestroy;		/* 销毁窗口热键ID */
+	ATOM m_idHotkeySwitch;		/* 切换绑定窗口状态热键ID */
+	ATOM m_idHotkeyDestroy;		/* 销毁绑定窗口热键ID */
 
 	ATOM m_idHotkeySelect;		/* 选择窗口热键ID */
 	ATOM m_idHotkeyCancel;		/* 取消选择热键ID */
+
+	BYTE m_btVKHotkeySwitch;	/* 切换绑定窗口状态热键的虚拟密钥代码 */
+	BYTE m_btVKHotkeyDestroy;	/* 销毁绑定窗口热键的虚拟密钥代码 */
+
+	BYTE m_btHKFHotkeySwitch;	/* 切换绑定窗口状态热键的键修饰符 */
+	BYTE m_btHKFHotkeyDestroy;	/* 销毁绑定窗口热键的键修饰符 */
 
 	WindowSwitching m_wndSwt;	/* 窗口状态切换封装类 */
 
@@ -60,6 +68,8 @@ private:
 	LRESULT OnPaint();
 
 	LRESULT OnHotkey(WPARAM wParam, LPARAM lParam);
+
+	LRESULT OnCommand(WPARAM wParam, LPARAM lParam);
 
 	LRESULT OnBtnSelect();
 

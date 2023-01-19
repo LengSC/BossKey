@@ -13,8 +13,8 @@ INT_PTR CALLBACK AboutWindow::AboutProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPA
 		case IDC_ABOUT_REPO:
 			ShellExecute(NULL, L"OPEN", L"https://github.com/LengSC/BossKey/", NULL, NULL, SW_MAXIMIZE);
 			break;
-		}
 
+		}
 		break;
 
 	default:

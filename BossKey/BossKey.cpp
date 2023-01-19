@@ -35,6 +35,12 @@ BossKey::BossKey() {
 	m_idHotkeySelect = NULL;
 	m_idHotkeyCancel = NULL;
 
+	m_btVKHotkeySwitch = 'S';
+	m_btVKHotkeyDestroy = 'D';
+
+	m_btHKFHotkeySwitch = HOTKEYF_CONTROL | HOTKEYF_ALT;
+	m_btHKFHotkeyDestroy = HOTKEYF_CONTROL | HOTKEYF_ALT;
+
 	m_bSelecting = FALSE;
 }
 
@@ -119,29 +125,7 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		break;
 	
 	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-		case ID_FILE_EXIT:
-			SendMessage(m_hWnd, WM_CLOSE, NULL, NULL);
-			break;
-
-		case ID_FILE_SETTINGS:
-			// TODO: 设置对话框
-			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_SETTINGS), m_hWnd, SettingsWindow::SettingsProc);
-			break;
-
-		case ID_HELP_ABOUT:
-			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_ABOUT), m_hWnd, AboutWindow::AboutProc);
-			break;
-
-		case ID_HELP_USAGE:
-			// TODO: 使用方法对话框
-			break;
-
-		case IDC_MAIN_SELECT:
-			OnBtnSelect();
-			break;
-
-		}
+		return OnCommand(wParam, lParam);
 		break;
 
 	default:
@@ -157,16 +141,20 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 LRESULT BossKey::OnCreate() {
 	/* 注册全局热键 */
 	m_idHotkeySwitch = GlobalAddAtom(L"HotkeySwitchWindow");
-	RegisterHotKey(m_hWnd, m_idHotkeySwitch, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'S');
-
 	m_idHotkeyDestroy = GlobalAddAtom(L"HotkeyDestroyWindow");
-	RegisterHotKey(m_hWnd, m_idHotkeyDestroy, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'D');
 
 	m_idHotkeySelect = GlobalAddAtom(L"HotkeySelectWindow");
-	RegisterHotKey(m_hWnd, m_idHotkeySelect, MOD_CONTROL | MOD_NOREPEAT, 'S');
-
 	m_idHotkeyCancel = GlobalAddAtom(L"HotkeyCancelSelection");
-	RegisterHotKey(m_hWnd, m_idHotkeyCancel, MOD_NOREPEAT, VK_ESCAPE);
+
+
+	if (!(RegisterHotKey(m_hWnd, m_idHotkeySwitch, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'S')
+		&& RegisterHotKey(m_hWnd, m_idHotkeyDestroy, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'D')
+		&& RegisterHotKey(m_hWnd, m_idHotkeySelect, MOD_CONTROL | MOD_NOREPEAT, 'S')
+		&& RegisterHotKey(m_hWnd, m_idHotkeyCancel, MOD_NOREPEAT, VK_ESCAPE))
+		) {
+		MessageBox(m_hWnd, L"系统热键注册失败，可能发生冲突", L"错误", MB_OK | MB_ICONERROR);
+		DestroyWindow(m_hWnd);
+	}
 
 	/* 创建窗口控件 */
 	/* 选择窗口 */
@@ -217,6 +205,16 @@ LRESULT BossKey::OnDestroy() {
 	/* 反注册全局热键 */
 	UnregisterHotKey(m_hWnd, m_idHotkeySwitch);
 	GlobalDeleteAtom(m_idHotkeySwitch);
+
+	UnregisterHotKey(m_hWnd, m_idHotkeyDestroy);
+	GlobalDeleteAtom(m_idHotkeyDestroy);
+
+	UnregisterHotKey(m_hWnd, m_idHotkeySelect);
+	GlobalDeleteAtom(m_idHotkeySelect);
+
+	UnregisterHotKey(m_hWnd, m_idHotkeyCancel);
+	GlobalDeleteAtom(m_idHotkeyCancel);
+
 
 	/* 释放绑定的窗口 */
 	m_wndSwt.Release();
@@ -323,6 +321,42 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 			}
 
 		}
+		break;
+
+	}
+
+	return 0;
+}
+
+
+LRESULT BossKey::OnCommand(WPARAM wParam, LPARAM lParam) {
+	switch (LOWORD(wParam)) {
+	case ID_FILE_EXIT:
+		SendMessage(m_hWnd, WM_CLOSE, NULL, NULL);
+		break;
+
+	case ID_FILE_SETTINGS:
+		// TODO: 设置的对话框内容
+		DialogBoxParam(
+			GetModuleHandle(NULL),
+			MAKEINTRESOURCE(IDD_DIALOG_SETTINGS),
+			m_hWnd,
+			SettingsWindow::SettingsProc,
+			MAKELPARAM(MAKEWORD(m_btVKHotkeySwitch, m_btHKFHotkeySwitch), MAKEWORD(m_btVKHotkeyDestroy, m_btHKFHotkeyDestroy))
+		);
+
+		break;
+
+	case ID_HELP_ABOUT:
+		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_ABOUT), m_hWnd, AboutWindow::AboutProc);
+		break;
+
+	case ID_HELP_USAGE:
+		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_USAGE), m_hWnd, UsageWindow::UsageProc);
+		break;
+
+	case IDC_MAIN_SELECT:
+		OnBtnSelect();
 		break;
 
 	}

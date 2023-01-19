@@ -143,6 +143,7 @@
     <ClCompile Include="AboutWindow.cpp" />
     <ClCompile Include="BossKey.cpp" />
     <ClCompile Include="SettingsWindow.cpp" />
+    <ClCompile Include="UsageWindow.cpp" />
     <ClCompile Include="WindowSwitching.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +152,7 @@
     <ClInclude Include="BossKey.h" />
     <ClInclude Include="SettingsWindow.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="UsageWindow.h" />
     <ClInclude Include="WindowSwitching.h" />
   </ItemGroup>
   <ItemGroup>

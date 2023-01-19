@@ -38,6 +38,9 @@
     <ClCompile Include="WindowSwitching.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="UsageWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutWindow.h">
@@ -56,6 +59,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WindowSwitching.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UsageWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
