@@ -135,12 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Image Include="Res\Icons\128x128.ico" />
-    <Image Include="Res\Icons\16x16.ico" />
-    <Image Include="Res\Icons\256x256.ico" />
-    <Image Include="Res\Icons\32x32.ico" />
-    <Image Include="Res\Icons\48x48.ico" />
-    <Image Include="Res\Icons\64x64.ico" />
+    <Image Include="Res\Icons\16x16.bmp" />
+    <Image Include="Res\Icons\App.ico" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />

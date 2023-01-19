@@ -2,12 +2,7 @@
 // Microsoft Visual C++ 生成的包含文件。
 // 供 BossKey.rc 使用
 //
-#define IDI_ICON_64                     101
-#define IDI_ICON_128                    102
-#define IDI_ICON_256                    103
-#define IDI_ICON_16                     104
-#define IDI_ICON_32                     105
-#define IDI_ICON_48                     106
+#define IDI_ICON_APP                    103
 #define IDR_MENU_MAIN                   107
 #define IDD_DIALOG_ABOUT                108
 #define IDD_DIALOG_SETTINGS             111

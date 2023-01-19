@@ -71,8 +71,8 @@ INT BossKey::Create() {
 	wc.style = CS_NOCLOSE;
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wc.hCursor = LoadCursor(GetModuleHandle(NULL), IDC_ARROW);
-	wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_16));
-	wc.hIconSm = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_16));
+	wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_APP));
+	wc.hIconSm = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_APP));
 
 	if (!RegisterClassEx(&wc)) {
 		return CS_FAILED;
@@ -163,12 +163,13 @@ LRESULT BossKey::OnCreate() {
 	RegisterHotKey(m_hWnd, m_idHotkeyDestroy, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'D');
 
 	m_idHotkeySelect = GlobalAddAtom(L"HotkeySelectWindow");
-	RegisterHotKey(m_hWnd, m_idHotkeySelect, MOD_NOREPEAT, 'S');
+	RegisterHotKey(m_hWnd, m_idHotkeySelect, MOD_CONTROL | MOD_NOREPEAT, 'S');
 
 	m_idHotkeyCancel = GlobalAddAtom(L"HotkeyCancelSelection");
 	RegisterHotKey(m_hWnd, m_idHotkeyCancel, MOD_NOREPEAT, VK_ESCAPE);
 
-	/* 创建控件 */
+	/* 创建窗口控件 */
+	/* 选择窗口 */
 	HWND hBtnSelect = CreateWindowEx(
 		NULL,
 		L"BUTTON",
@@ -182,7 +183,7 @@ LRESULT BossKey::OnCreate() {
 		NULL
 	);
 
-	/* 用于日志输出 */
+	/* 日志输出 */
 	HWND hEditLog = CreateWindowEx(
 		WS_EX_CLIENTEDGE,
 		L"EDIT",
@@ -263,6 +264,18 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 	switch (LOWORD(lParam)) {
 	case NULL:
 		switch (HIWORD(lParam)) {
+		case VK_ESCAPE:
+			if (m_bSelecting) {
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    取消窗口选择\r\n");
+				m_bSelecting = FALSE;
+			}
+			break;
+
+		}
+		break;
+
+	case MOD_CONTROL:
+		switch (HIWORD(lParam)) {
 		case 'S':
 			if (m_bSelecting) {
 				switch (m_wndSwt.Select()) {
@@ -279,13 +292,6 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 			}
 			break;
 
-		case VK_ESCAPE:
-			if (m_bSelecting) {
-				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    取消了窗口选择\r\n");
-				m_bSelecting = FALSE;
-			}
-			break;
-
 		}
 		break;
 
@@ -293,7 +299,7 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 		switch (HIWORD(lParam)) {
 		case 'S':
 			if (m_wndSwt.Switch()) {
-				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    切换了绑定窗口状态\r\n");
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    切换绑定窗口状态\r\n");
 			}
 			else {
 				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    绑定窗口已关闭\r\n");
@@ -303,7 +309,7 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 		case 'D':
 			switch (m_wndSwt.Destroy()) {
 			case DS_SUCCEED:
-				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    关闭了绑定窗口\r\n");
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    关闭绑定窗口\r\n");
 				break;
 
 			case DS_CLOSED:

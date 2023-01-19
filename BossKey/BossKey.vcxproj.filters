@@ -15,22 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Res\Icons\16x16.ico">
+    <Image Include="Res\Icons\16x16.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="Res\Icons\32x32.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="Res\Icons\48x48.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="Res\Icons\64x64.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="Res\Icons\128x128.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="Res\Icons\256x256.ico">
+    <Image Include="Res\Icons\App.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
