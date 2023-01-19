@@ -29,7 +29,7 @@ public:
 
 	HWND Window() const;
 
-    BOOL Create();	/* 创建窗口 */
+	BOOL Create();	/* 创建窗口 */
 
 	LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);	/* 窗口消息处理函数 */
 
@@ -39,8 +39,14 @@ private:
 	HANDLE m_hMutexExecuting;	/* 互斥体防止进程多开 */
 
 	ATOM m_idHotkeySwitch;		/* 窗口状态切换热键ID */
+	ATOM m_idHotkeyDestroy;		/* 销毁窗口热键ID */
+
+	ATOM m_idHotkeySelect;		/* 选择窗口热键ID */
+	ATOM m_idHotkeyCancel;		/* 取消选择热键ID */
 
 	WindowSwitching m_wndSwt;	/* 窗口状态切换封装类 */
+
+	BOOL m_bSelecting;			/* 是否正在选择窗口 */
 
 private:
 	LRESULT OnCreate();

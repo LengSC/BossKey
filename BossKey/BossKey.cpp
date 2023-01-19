@@ -26,8 +26,16 @@ LRESULT CALLBACK BossKey::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 
 BossKey::BossKey() {
 	m_hWnd = NULL;
+
 	m_hMutexExecuting = NULL;
+
 	m_idHotkeySwitch = NULL;
+	m_idHotkeyDestroy = NULL;
+
+	m_idHotkeySelect = NULL;
+	m_idHotkeyCancel = NULL;
+
+	m_bSelecting = FALSE;
 }
 
 
@@ -75,7 +83,7 @@ INT BossKey::Create() {
 		ClassName(), L"BossKey",
 		WS_CAPTION | WS_SYSMENU | WS_OVERLAPPED | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		300, 500,
+		325, 500,
 		NULL, LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU_MAIN)), GetModuleHandle(NULL),
 		this
 	);
@@ -117,6 +125,7 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 
 		case ID_FILE_SETTINGS:
+			// TODO: 设置对话框
 			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_SETTINGS), m_hWnd, SettingsWindow::SettingsProc);
 			break;
 
@@ -125,7 +134,7 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 
 		case ID_HELP_USAGE:
-			// TODO 使用方法
+			// TODO: 使用方法对话框
 			break;
 
 		case IDC_MAIN_SELECT:
@@ -147,8 +156,17 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 LRESULT BossKey::OnCreate() {
 	/* 注册全局热键 */
-	m_idHotkeySwitch = GlobalAddAtom(L"HotkeySwitchWindowShowState");
-	RegisterHotKey(m_hWnd, m_idHotkeySwitch, MOD_CONTROL | MOD_ALT, 'S');
+	m_idHotkeySwitch = GlobalAddAtom(L"HotkeySwitchWindow");
+	RegisterHotKey(m_hWnd, m_idHotkeySwitch, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'S');
+
+	m_idHotkeyDestroy = GlobalAddAtom(L"HotkeyDestroyWindow");
+	RegisterHotKey(m_hWnd, m_idHotkeyDestroy, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'D');
+
+	m_idHotkeySelect = GlobalAddAtom(L"HotkeySelectWindow");
+	RegisterHotKey(m_hWnd, m_idHotkeySelect, MOD_NOREPEAT, 'S');
+
+	m_idHotkeyCancel = GlobalAddAtom(L"HotkeyCancelSelection");
+	RegisterHotKey(m_hWnd, m_idHotkeyCancel, MOD_NOREPEAT, VK_ESCAPE);
 
 	/* 创建控件 */
 	HWND hBtnSelect = CreateWindowEx(
@@ -171,7 +189,7 @@ LRESULT BossKey::OnCreate() {
 		NULL,
 		WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_LEFT | ES_READONLY,
 		100, 10,
-		175, 420,
+		200, 420,
 		m_hWnd,
 		(HMENU)IDC_MAIN_LOGGING,
 		GetModuleHandle(NULL),
@@ -209,6 +227,7 @@ LRESULT BossKey::OnDestroy() {
 
 
 LRESULT BossKey::OnCtlColorStatic(WPARAM wParam, LPARAM lParam) {
+	/* 设置静态文本框的颜色 */
 	HWND hEditLog = GetDlgItem(m_hWnd, IDC_MAIN_LOGGING);
 
 	HDC hDc = (HDC)wParam;
@@ -242,17 +261,60 @@ LRESULT BossKey::OnPaint() {
 
 LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 	switch (LOWORD(lParam)) {
+	case NULL:
+		switch (HIWORD(lParam)) {
+		case 'S':
+			if (m_bSelecting) {
+				switch (m_wndSwt.Select()) {
+				case SS_SUCCEED:
+					EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    窗口选择成功\r\n");
+					break;
+
+				case SS_FAILED:
+					EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    窗口选择失败\r\n");
+					break;
+
+				}
+				m_bSelecting = FALSE;
+			}
+			break;
+
+		case VK_ESCAPE:
+			if (m_bSelecting) {
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    取消了窗口选择\r\n");
+				m_bSelecting = FALSE;
+			}
+			break;
+
+		}
+		break;
+
 	case (MOD_CONTROL | MOD_ALT):
 		switch (HIWORD(lParam)) {
 		case 'S':
-			/* 切换窗口此显示状态 */
 			if (m_wndSwt.Switch()) {
-				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    切换了窗口状态\r\n");
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    切换了绑定窗口状态\r\n");
 			}
 			else {
-				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    绑定的窗口已关闭\r\n");
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    绑定窗口已关闭\r\n");
 			}
 			break;
+
+		case 'D':
+			switch (m_wndSwt.Destroy()) {
+			case DS_SUCCEED:
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    关闭了绑定窗口\r\n");
+				break;
+
+			case DS_CLOSED:
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    绑定窗口已关闭\r\n");
+				break;
+
+			case DS_FAILED:
+				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    关闭绑定窗口失败\r\n");
+				break;
+
+			}
 
 		}
 		break;
@@ -264,20 +326,9 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 
 
 LRESULT BossKey::OnBtnSelect() {
+	m_bSelecting = TRUE;
 	EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    开始选择窗口\r\n");
-	switch (m_wndSwt.Select()) {
-	case SS_SUCCEED:
-		EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    窗口选择成功\r\n");
-		break;
 
-	case SS_CANCELED:
-		EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    用户取消了窗口选择\r\n");
-		break;
-
-	case SS_FAILED:
-		EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    窗口选择失败\r\n");
-		break;
-	}
 	return 0;
 }
 

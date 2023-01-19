@@ -7,8 +7,14 @@
 
 enum SelectionState {
 	SS_SUCCEED = (INT)0,	/* 选择成功 */
-	SS_CANCELED = (INT)1,	/* 用户取消 */
 	SS_FAILED = (INT)-1		/* 选择失败 */
+};
+
+
+enum DestructionState {
+	DS_SUCCEED = (INT)0,	/* 关闭成功 */
+	DS_CLOSED = (INT)1,		/* 已经关闭 */
+	DS_FAILED = (INT)-1		/* 关闭失败 */
 };
 
 
@@ -19,6 +25,8 @@ public:
 	INT Select();
 
 	BOOL Switch();
+
+	INT Destroy();
 
 	VOID Release();
 
