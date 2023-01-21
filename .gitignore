@@ -1,5 +1,6 @@
 /.vs/
 /Debug/
+*.res
 *.lib
 *.idb
 *.lnk

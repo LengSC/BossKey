@@ -5,10 +5,11 @@
 ---
 
 <p align = "center">
-    <a href = "#"><img src = "https://img.shields.io/badge/language-C++-blue.svg"></a>
-    <a href = "https://github.com/LengSC/BossKey/releases"><img src = "https://img.shields.io/badge/release-1.0-greeb.svg"></a>
-    <a href = "https://github.com/LengSC/BossKey/blob/main/LICENSE"><img src = "https://img.shields.io/badge/lisence-MIT-orange.svg"></a>
+    <a href = "#"><img src = "https://img.shields.io/badge/Language-C++-blue.svg"></a>
+    <a href = "https://github.com/LengSC/BossKey/releases"><img src = "https://img.shields.io/badge/Version-1.0.0-greeb.svg"></a>
+    <a href = "https://github.com/LengSC/BossKey/blob/main/LICENSE"><img src = "https://img.shields.io/badge/License-MIT-orange.svg"></a>
 </p>
+
 ---
 
 简介
@@ -78,12 +79,13 @@ A：检查系统是否为 Windows，有没有毒软限制了软件。
 其他
 ---
 
-如果你喜欢这个项目，<br/>不妨推荐给你的好友吧😉
+如果你喜欢这个项目，<br/>不妨推荐给你的好友吧😉！
+
+如果你在使用过程中发现了 BUG，<br/>请到 Github 将其发给我，我将及时修复。
 
 许可
 ---
 
 [MIT License](https://github.com/LengSC/BossKey/blob/main/LICENSE) (free, open source)
 
-Q：为什么不用 WTFPL 啊啊啊啊啊啊！<br/>
-A：Emmmmm...
+~~为什么不用 WTFPL 啊啊啊啊啊啊！~~

@@ -1,11 +1,8 @@
 #pragma once
 
 #include <Windows.h>
-//#include <CommCtrl.h>
 
 #include "Resource.h"
-
-//#pragma comment(lib, "comctl32.lib")
 
 
 class SettingsWindow {

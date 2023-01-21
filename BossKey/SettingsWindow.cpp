@@ -22,11 +22,6 @@ INT_PTR CALLBACK SettingsWindow::SettingsProc(HWND hDlg, UINT uMsg, WPARAM wPara
 
 
 INT_PTR SettingsWindow::OnInitDialog(HWND hDlg, WPARAM wParam, LPARAM lParam) {
-	/*INITCOMMONCONTROLSEX icex = { 0 };
-	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	icex.dwICC = ICC_HOTKEY_CLASS;
-	InitCommonControlsEx(&icex);*/
-
 	return (INT_PTR)TRUE;
 }
 

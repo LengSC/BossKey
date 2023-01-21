@@ -184,10 +184,10 @@ LRESULT BossKey::OnCreate() {
 		NULL
 	);
 
-	clock_t td = clock() - start;
+	clock_t td = 1000 - clock() + start;
 
-	if (td < 2000) {
-		Sleep((DWORD)(2000 - td));
+	if (td > 0) {
+		Sleep((DWORD)td);
 	}
 
 	SendMessage(hSplash, WM_CLOSE, NULL, NULL);
@@ -359,7 +359,7 @@ LRESULT BossKey::OnCommand(WPARAM wParam, LPARAM lParam) {
 		break;
 
 	case ID_FILE_SETTINGS:
-		// TODO: 设置的对话框内容
+		// TODO: next vesion: 设置的对话框内容
 		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_SETTINGS), m_hWnd, SettingsWindow::SettingsProc);
 		break;
 
