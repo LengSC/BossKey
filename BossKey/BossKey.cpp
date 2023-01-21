@@ -29,17 +29,11 @@ BossKey::BossKey() {
 
 	m_hMutexExecuting = NULL;
 
-	m_idHotkeySwitch = NULL;
-	m_idHotkeyDestroy = NULL;
+	m_idHotKeySwitch = NULL;
+	m_idHotKeyDestroy = NULL;
 
-	m_idHotkeySelect = NULL;
-	m_idHotkeyCancel = NULL;
-
-	m_btVKHotkeySwitch = 'S';
-	m_btVKHotkeyDestroy = 'D';
-
-	m_btHKFHotkeySwitch = HOTKEYF_CONTROL | HOTKEYF_ALT;
-	m_btHKFHotkeyDestroy = HOTKEYF_CONTROL | HOTKEYF_ALT;
+	m_idHotKeySelect = NULL;
+	m_idHotKeyCancel = NULL;
 
 	m_bSelecting = FALSE;
 }
@@ -134,23 +128,23 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 	}
 
-	return TRUE;
+	return (LRESULT)TRUE;
 }
 
 
 LRESULT BossKey::OnCreate() {
 	/* 注册全局热键 */
-	m_idHotkeySwitch = GlobalAddAtom(L"HotkeySwitchWindow");
-	m_idHotkeyDestroy = GlobalAddAtom(L"HotkeyDestroyWindow");
+	m_idHotKeySwitch = GlobalAddAtom(L"BossKeyHotKeySwitchWindow");
+	m_idHotKeyDestroy = GlobalAddAtom(L"BossKeyHotKeyDestroyWindow");
 
-	m_idHotkeySelect = GlobalAddAtom(L"HotkeySelectWindow");
-	m_idHotkeyCancel = GlobalAddAtom(L"HotkeyCancelSelection");
+	m_idHotKeySelect = GlobalAddAtom(L"BossKeyHotKeySelectWindow");
+	m_idHotKeyCancel = GlobalAddAtom(L"BossKeyHotKeyCancelSelection");
 
 
-	if (!(RegisterHotKey(m_hWnd, m_idHotkeySwitch, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'S')
-		&& RegisterHotKey(m_hWnd, m_idHotkeyDestroy, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'D')
-		&& RegisterHotKey(m_hWnd, m_idHotkeySelect, MOD_CONTROL | MOD_NOREPEAT, 'S')
-		&& RegisterHotKey(m_hWnd, m_idHotkeyCancel, MOD_NOREPEAT, VK_ESCAPE))
+	if (!(RegisterHotKey(m_hWnd, m_idHotKeySwitch, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'S')
+		&& RegisterHotKey(m_hWnd, m_idHotKeyDestroy, MOD_CONTROL | MOD_ALT | MOD_NOREPEAT, 'D')
+		&& RegisterHotKey(m_hWnd, m_idHotKeySelect, MOD_CONTROL | MOD_NOREPEAT, 'S')
+		&& RegisterHotKey(m_hWnd, m_idHotKeyCancel, MOD_NOREPEAT, VK_ESCAPE))
 		) {
 		MessageBox(m_hWnd, L"系统热键注册失败，可能发生冲突", L"错误", MB_OK | MB_ICONERROR);
 		DestroyWindow(m_hWnd);
@@ -185,7 +179,7 @@ LRESULT BossKey::OnCreate() {
 		NULL
 	);
 
-	return 0;
+	return (LRESULT)FALSE;
 }
 
 
@@ -203,17 +197,17 @@ LRESULT BossKey::OnDestroy() {
 	CloseHandle(m_hMutexExecuting);
 
 	/* 反注册全局热键 */
-	UnregisterHotKey(m_hWnd, m_idHotkeySwitch);
-	GlobalDeleteAtom(m_idHotkeySwitch);
+	UnregisterHotKey(m_hWnd, m_idHotKeySwitch);
+	GlobalDeleteAtom(m_idHotKeySwitch);
 
-	UnregisterHotKey(m_hWnd, m_idHotkeyDestroy);
-	GlobalDeleteAtom(m_idHotkeyDestroy);
+	UnregisterHotKey(m_hWnd, m_idHotKeyDestroy);
+	GlobalDeleteAtom(m_idHotKeyDestroy);
 
-	UnregisterHotKey(m_hWnd, m_idHotkeySelect);
-	GlobalDeleteAtom(m_idHotkeySelect);
+	UnregisterHotKey(m_hWnd, m_idHotKeySelect);
+	GlobalDeleteAtom(m_idHotKeySelect);
 
-	UnregisterHotKey(m_hWnd, m_idHotkeyCancel);
-	GlobalDeleteAtom(m_idHotkeyCancel);
+	UnregisterHotKey(m_hWnd, m_idHotKeyCancel);
+	GlobalDeleteAtom(m_idHotKeyCancel);
 
 
 	/* 释放绑定的窗口 */
@@ -221,7 +215,7 @@ LRESULT BossKey::OnDestroy() {
 
 	PostQuitMessage(0);
 
-	return 0;
+	return (LRESULT)FALSE;
 }
 
 
@@ -242,7 +236,7 @@ LRESULT BossKey::OnCtlColorStatic(WPARAM wParam, LPARAM lParam) {
 
 	ReleaseDC(hEditLog, hDc);
 
-	return 0;
+	return (LRESULT)FALSE;
 }
 
 
@@ -254,11 +248,22 @@ LRESULT BossKey::OnPaint() {
 
 	EndPaint(m_hWnd, &ps);
 
-	return 0;
+	return (LRESULT)FALSE;
 }
 
 
 LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
+	/* 防止热键吞掉了其他软件的快捷键 */
+	HWND hFocusWnd = GetForegroundWindow();
+	DWORD dwFocusThreadId = GetWindowThreadProcessId(hFocusWnd, NULL);
+	DWORD dwCurrentThreadId = GetCurrentThreadId();
+
+	if (dwFocusThreadId != dwCurrentThreadId) {
+		PostMessage(hFocusWnd, WM_KEYDOWN, HIWORD(lParam), 0);
+		PostMessage(hFocusWnd, WM_CHAR, HIWORD(lParam), 0);
+	}
+
+	/* 处理热键 */
 	switch (LOWORD(lParam)) {
 	case NULL:
 		switch (HIWORD(lParam)) {
@@ -267,6 +272,7 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 				EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    取消窗口选择\r\n");
 				m_bSelecting = FALSE;
 			}
+
 			break;
 
 		}
@@ -325,7 +331,7 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 
 	}
 
-	return 0;
+	return (LRESULT)FALSE;
 }
 
 
@@ -337,14 +343,7 @@ LRESULT BossKey::OnCommand(WPARAM wParam, LPARAM lParam) {
 
 	case ID_FILE_SETTINGS:
 		// TODO: 设置的对话框内容
-		DialogBoxParam(
-			GetModuleHandle(NULL),
-			MAKEINTRESOURCE(IDD_DIALOG_SETTINGS),
-			m_hWnd,
-			SettingsWindow::SettingsProc,
-			MAKELPARAM(MAKEWORD(m_btVKHotkeySwitch, m_btHKFHotkeySwitch), MAKEWORD(m_btVKHotkeyDestroy, m_btHKFHotkeyDestroy))
-		);
-
+		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_SETTINGS), m_hWnd, SettingsWindow::SettingsProc);
 		break;
 
 	case ID_HELP_ABOUT:
@@ -361,7 +360,7 @@ LRESULT BossKey::OnCommand(WPARAM wParam, LPARAM lParam) {
 
 	}
 
-	return 0;
+	return (LRESULT)FALSE;
 }
 
 
@@ -369,7 +368,7 @@ LRESULT BossKey::OnBtnSelect() {
 	m_bSelecting = TRUE;
 	EditAddStr(GetDlgItem(m_hWnd, IDC_MAIN_LOGGING), L"[INFO]    开始选择窗口\r\n");
 
-	return 0;
+	return (LRESULT)FALSE;
 }
 
 

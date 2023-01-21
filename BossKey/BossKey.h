@@ -40,17 +40,11 @@ private:
 
 	HANDLE m_hMutexExecuting;	/* 互斥体防止进程多开 */
 
-	ATOM m_idHotkeySwitch;		/* 切换绑定窗口状态热键ID */
-	ATOM m_idHotkeyDestroy;		/* 销毁绑定窗口热键ID */
+	ATOM m_idHotKeySwitch;		/* 切换绑定窗口状态热键ID */
+	ATOM m_idHotKeyDestroy;		/* 销毁绑定窗口热键ID */
 
-	ATOM m_idHotkeySelect;		/* 选择窗口热键ID */
-	ATOM m_idHotkeyCancel;		/* 取消选择热键ID */
-
-	BYTE m_btVKHotkeySwitch;	/* 切换绑定窗口状态热键的虚拟密钥代码 */
-	BYTE m_btVKHotkeyDestroy;	/* 销毁绑定窗口热键的虚拟密钥代码 */
-
-	BYTE m_btHKFHotkeySwitch;	/* 切换绑定窗口状态热键的键修饰符 */
-	BYTE m_btHKFHotkeyDestroy;	/* 销毁绑定窗口热键的键修饰符 */
+	ATOM m_idHotKeySelect;		/* 选择窗口热键ID */
+	ATOM m_idHotKeyCancel;		/* 取消选择热键ID */
 
 	WindowSwitching m_wndSwt;	/* 窗口状态切换封装类 */
 

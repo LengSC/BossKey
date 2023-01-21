@@ -15,10 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Res\Icons\16x16.bmp">
+    <Image Include="Res\Images\16x16.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="Res\Icons\App.ico">
+    <Image Include="Res\Images\App.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Res\Images\bitmap1.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

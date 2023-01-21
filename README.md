@@ -9,8 +9,6 @@
     <a href = "https://github.com/LengSC/BossKey/releases"><img src = "https://img.shields.io/badge/release-1.0-greeb.svg"></a>
     <a href = "https://github.com/LengSC/BossKey/blob/main/LICENSE"><img src = "https://img.shields.io/badge/lisence-MIT-orange.svg"></a>
 </p>
-
-
 ---
 
 简介
@@ -36,9 +34,8 @@
 ---
 
 * 隐藏或显示绑定的摸鱼窗口。
-* 在隐藏摸鱼窗口的同时，可以显示（或置顶）一个关于工作的窗口。
-* 可自定义快捷键，更加适应使用环境。
 * 软件小巧，资源占用可忽略。
+* 设计银杏。
 * 莫得广告。
 * 莫得收费。
 
