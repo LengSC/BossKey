@@ -22,6 +22,8 @@ class WindowSwitching {
 public:
 	WindowSwitching();
 
+	HWND Controlled() const;
+
 	INT Select();
 
 	BOOL Switch();

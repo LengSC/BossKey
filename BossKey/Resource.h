@@ -3,10 +3,12 @@
 // π© BossKey.rc  π”√
 //
 #define IDI_ICON_APP                    101
-#define IDR_MENU_MAIN                   102
-#define IDD_DIALOG_SETTINGS             103
-#define IDD_DIALOG_ABOUT                104
-#define IDD_DIALOG_USAGE                105
+#define IDB_SPLASH                      102
+#define IDR_MENU_MAIN                   103
+#define IDD_DIALOG_SPLASH               104
+#define IDD_DIALOG_SETTINGS             105
+#define IDD_DIALOG_ABOUT                106
+#define IDD_DIALOG_USAGE                107
 #define IDC_MAIN_SELECT                 1001
 #define IDC_MAIN_LOGGING                1002
 #define IDC_SETTINGS_OK                 1003
@@ -27,7 +29,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        107
+#define _APS_NEXT_RESOURCE_VALUE        109
 #define _APS_NEXT_COMMAND_VALUE         40007
 #define _APS_NEXT_CONTROL_VALUE         1010
 #define _APS_NEXT_SYMED_VALUE           101

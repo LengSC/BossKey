@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Windows.h>
+#include <ctime>
 
+#include "SplashWindow.h"
 #include "SettingsWindow.h"
 #include "AboutWindow.h"
 #include "UsageWindow.h"

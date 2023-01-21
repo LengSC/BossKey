@@ -51,7 +51,7 @@ HWND BossKey::Window() const {
 
 INT BossKey::Create() {
 	/* 防止进程多开 */
-	m_hMutexExecuting = CreateMutex(NULL, FALSE, L"EXECUTING");
+	m_hMutexExecuting = CreateMutex(NULL, FALSE, L"BossKeyExecuting");
 
 	if (m_hMutexExecuting == NULL) {
 		return CS_FAILED;
@@ -133,6 +133,11 @@ LRESULT BossKey::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 
 LRESULT BossKey::OnCreate() {
+	clock_t start = clock();
+
+	/* 显示开始画面 */
+	HWND hSplash = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_SPLASH), m_hWnd, SplashWindow::SplashProc);
+
 	/* 注册全局热键 */
 	m_idHotKeySwitch = GlobalAddAtom(L"BossKeyHotKeySwitchWindow");
 	m_idHotKeyDestroy = GlobalAddAtom(L"BossKeyHotKeyDestroyWindow");
@@ -146,7 +151,7 @@ LRESULT BossKey::OnCreate() {
 		&& RegisterHotKey(m_hWnd, m_idHotKeySelect, MOD_CONTROL | MOD_NOREPEAT, 'S')
 		&& RegisterHotKey(m_hWnd, m_idHotKeyCancel, MOD_NOREPEAT, VK_ESCAPE))
 		) {
-		MessageBox(m_hWnd, L"系统热键注册失败，可能发生冲突", L"错误", MB_OK | MB_ICONERROR);
+		MessageBox(m_hWnd, L"系统热键注册失败，可能发生冲突！", L"错误", MB_OK | MB_ICONERROR);
 		DestroyWindow(m_hWnd);
 	}
 
@@ -178,6 +183,14 @@ LRESULT BossKey::OnCreate() {
 		GetModuleHandle(NULL),
 		NULL
 	);
+
+	clock_t td = clock() - start;
+
+	if (td < 2000) {
+		Sleep((DWORD)(2000 - td));
+	}
+
+	SendMessage(hSplash, WM_CLOSE, NULL, NULL);
 
 	return (LRESULT)FALSE;
 }
@@ -260,7 +273,6 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 
 	if (dwFocusThreadId != dwCurrentThreadId) {
 		PostMessage(hFocusWnd, WM_KEYDOWN, HIWORD(lParam), 0);
-		PostMessage(hFocusWnd, WM_CHAR, HIWORD(lParam), 0);
 	}
 
 	/* 处理热键 */
@@ -293,6 +305,11 @@ LRESULT BossKey::OnHotkey(WPARAM wParam, LPARAM lParam) {
 
 				}
 				m_bSelecting = FALSE;
+				
+				if (m_wndSwt.Controlled() == m_hWnd) {
+					MessageBox(m_hWnd, L"不能绑定软件窗口本身!", L"错误", MB_OK | MB_ICONERROR);
+					m_wndSwt.Release();
+				}
 			}
 			break;
 

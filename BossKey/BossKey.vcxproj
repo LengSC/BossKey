@@ -137,13 +137,14 @@
   <ItemGroup>
     <Image Include="Res\Images\16x16.bmp" />
     <Image Include="Res\Images\App.ico" />
-    <Image Include="Res\Images\bitmap1.bmp" />
+    <Image Include="Res\Images\Splash.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AboutWindow.cpp" />
     <ClCompile Include="BossKey.cpp" />
     <ClCompile Include="SettingsWindow.cpp" />
+    <ClCompile Include="SplashWindow.cpp" />
     <ClCompile Include="UsageWindow.cpp" />
     <ClCompile Include="WindowSwitching.cpp" />
   </ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="BossKey.h" />
     <ClInclude Include="SettingsWindow.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SplashWindow.h" />
     <ClInclude Include="UsageWindow.h" />
     <ClInclude Include="WindowSwitching.h" />
   </ItemGroup>

@@ -7,6 +7,11 @@ WindowSwitching::WindowSwitching() {
 }
 
 
+HWND WindowSwitching::Controlled() const {
+	return m_hControlled;
+}
+
+
 INT WindowSwitching::Select() {
 	POINT pt = { 0 };
 	HWND hTmp = NULL;

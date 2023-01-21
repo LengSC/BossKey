@@ -21,7 +21,7 @@
     <Image Include="Res\Images\App.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="Res\Images\bitmap1.bmp">
+    <Image Include="Res\Images\Splash.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
@@ -42,6 +42,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UsageWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SplashWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,6 +68,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UsageWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SplashWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
